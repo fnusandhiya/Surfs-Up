@@ -61,8 +61,8 @@ def precipitation():
     filter(Measurement.date >= last_year).\
     order_by(Measurement.date).all()
 
-    prcp = []
     #Query percipitation
+    prcp = []
     for p in precipitation:
         prcp.append({'date':p[0], 'tobs':p[1]})
 
