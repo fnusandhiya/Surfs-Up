@@ -62,11 +62,9 @@ def precipitation():
     order_by(Measurement.date).all()
 
     #Query percipitation
-    prcp = []
-    for p in precipitation:
-        prcp.append({'date':p[0], 'tobs':p[1]})
+    precip = {date: tobs for date, tobs in precipitation}
 
-    return jsonify(prcp)
+    return jsonify(precip)
 
 #*****Stations********
 #* Return a JSON list of stations from the dataset.
@@ -82,7 +80,18 @@ def stations():
 
 #*******Tobs*******
 #* Return a JSON list of Temperature Observations (tobs) for the previous year.
+@app.route("/api/v1.0/tobs")
+def tobs():
+    last_year = dt.date(2017, 8, 23) - dt.timedelta(days=365)
+    tob = session.query(Measurement.date, Measurement.tobs).filter(Measurement.date >= last_year).order_by(Measurement.date).all()
 
+    #Query Tobs
+    Tlist = []
+    for t in tob:
+        Tlist.append({'date':t[0], 'tobs':t[1]})
+
+    return jsonify(Tlist)
+    
 #*******Start OR Start-End Range**********
 #* Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
     #* When given the start only, calculate `TMIN`, `TAVG`, and `TMAX` for all dates greater than and equal to the start date.
